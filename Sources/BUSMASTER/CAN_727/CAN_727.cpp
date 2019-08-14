@@ -24,6 +24,8 @@
 /* C++ includes */
 #include <string>
 #include <vector>
+#include <stdio.h>
+#include <time.h>
 
 /* Project includes */
 #include "CAN_727_stdafx.h"
@@ -56,6 +58,47 @@ END_MESSAGE_MAP()
 
 #define RETURN_ERROR_RESULT(func) HRESULT hResult = S_FALSE; m_LastError = #func; return hResult;
 
+class Logger
+{
+	Logger()
+	{
+		
+	}
+
+	Logger(const Logger &);
+	void operator=(const Logger &);
+	static Logger m_Instance;
+	
+public:
+	static Logger& instance()
+	{
+		return m_Instance;
+	}
+	void writeLine(const char * format, ...)
+	{
+		FILE * file;
+		file = fopen("log.txt", "a");
+		if (file){
+			time_t ltime; /* calendar time */
+			ltime = time(NULL); /* get current cal time */
+			char *timeStr = asctime(localtime(&ltime));
+			timeStr[strlen(timeStr) - 1] = 0;
+
+			fprintf(file, "%s ", timeStr);
+			va_list args;
+			va_start(args, format);
+			vfprintf(file, format, args);
+			va_end(args);
+			fprintf(file, "\r\n");
+			fclose(file);
+		}
+	}
+};
+
+#define LOG(FRM, ...) Logger::instance().writeLine(FRM, ##__VA_ARGS__)
+
+Logger Logger::m_Instance;
+
 /**
  * CCAN_STUBApp construction
  */
@@ -76,7 +119,6 @@ CCAN_727App theApp;
 BOOL CCAN_727App::InitInstance()
 {
     CWinApp::InitInstance();
-
     return TRUE;
 }
 
@@ -113,6 +155,7 @@ BYTE sg_bCurrState = STATE_PRIMORDIAL;
 class CDIL_CAN_727 : public CBaseDIL_CAN_Controller
 {
 public:
+	CDIL_CAN_727();
 	typedef std::string String;
     /* STARTS IMPLEMENTATION OF THE INTERFACE FUNCTIONS... */
 	HRESULT CAN_PerformInitOperations(void);
@@ -149,6 +192,11 @@ private:
 
 static CDIL_CAN_727* sg_pouDIL_CAN_STUB = nullptr;
 
+CDIL_CAN_727::CDIL_CAN_727()
+{
+	LOG("+++++++++++++++++++New+++++++++++++++++++++");
+}
+
 /**
  * \return S_OK for success, S_FALSE for failure
  *
@@ -165,19 +213,21 @@ USAGEMODE HRESULT GetIDIL_CAN_Controller(void** ppvInterface)
         }
     }
     *ppvInterface = (void*) sg_pouDIL_CAN_STUB;  /* Doesn't matter even if sg_pouDIL_CAN_Kvaser is null */
-
+	LOG("GetIDIL_CAN_Controller");
     return hResult;
 }
 
 HRESULT CDIL_CAN_727::CAN_PerformInitOperations(void)
 {
 	//RETURN_ERROR_RESULT(CAN_PerformInitOperations)
+	LOG("CAN_PerformInitOperations");
 	return S_OK;
 }
 
 HRESULT CDIL_CAN_727::CAN_PerformClosureOperations(void)
 {
 	//RETURN_ERROR_RESULT(CAN_PerformClosureOperations)
+	LOG("CAN_PerformClosureOperations");
 	return S_OK;
 }
 
@@ -187,6 +237,7 @@ static LARGE_INTEGER    sg_QueryTickCount;
 
 HRESULT CDIL_CAN_727::CAN_GetTimeModeMapping(SYSTEMTIME& CurrSysTime, UINT64& TimeStamp, LARGE_INTEGER& QueryTickCount)
 {
+	LOG("CAN_GetTimeModeMapping");
 	CurrSysTime = sg_CurrSysTime;
 	TimeStamp = sg_TimeStampRef;
 	QueryTickCount = sg_QueryTickCount;
@@ -196,6 +247,7 @@ HRESULT CDIL_CAN_727::CAN_GetTimeModeMapping(SYSTEMTIME& CurrSysTime, UINT64& Ti
 
 HRESULT CDIL_CAN_727::CAN_ListHwInterfaces(INTERFACE_HW_LIST& sSelHwInterface, INT& nCount, PSCONTROLLER_DETAILS InitData)
 {
+	LOG("CAN_ListHwInterfaces");
 	//RETURN_ERROR_RESULT(CAN_ListHwInterfaces)
 	sSelHwInterface[0].m_dwIdInterface = 0x100;
 	sSelHwInterface[0].m_acNameInterface = "727_Simulation";
@@ -206,18 +258,21 @@ HRESULT CDIL_CAN_727::CAN_ListHwInterfaces(INTERFACE_HW_LIST& sSelHwInterface, I
 
 HRESULT CDIL_CAN_727::CAN_SelectHwInterface(const INTERFACE_HW_LIST& sSelHwInterface, INT nCount)
 {
+	LOG("CAN_SelectHwInterface");
 	//RETURN_ERROR_RESULT(CAN_SelectHwInterface)
 	return S_OK;
 }
 
 HRESULT CDIL_CAN_727::CAN_DeselectHwInterface(void)
 {
+	LOG("CAN_DeselectHwInterface");
 	//RETURN_ERROR_RESULT(CAN_DeselectHwInterface)
 	return S_OK;
 }
 
 HRESULT CDIL_CAN_727::CAN_SetConfigData(PSCONTROLLER_DETAILS InitData, int Length)
 {
+	LOG("CAN_SetConfigData");
 	//RETURN_ERROR_RESULT(CAN_SetConfigData)
 	((PSCONTROLLER_DETAILS)InitData)[0].m_omHardwareDesc =
 		"727 Simulation";
@@ -226,18 +281,21 @@ HRESULT CDIL_CAN_727::CAN_SetConfigData(PSCONTROLLER_DETAILS InitData, int Lengt
 
 HRESULT CDIL_CAN_727::CAN_StartHardware(void)
 {
+	LOG("CAN_StartHardware");
 	//RETURN_ERROR_RESULT(CAN_StartHardware)
 	return S_OK;
 }
 
 HRESULT CDIL_CAN_727::CAN_StopHardware(void)
 {
+	LOG("CAN_StopHardware");
 	//RETURN_ERROR_RESULT(CAN_StopHardware)
 	return S_OK;
 }
 
 HRESULT CDIL_CAN_727::CAN_GetCurrStatus(STATUSMSG& StatusData)
 {
+	LOG("CAN_GetCurrStatus");
 	//RETURN_ERROR_RESULT(CAN_GetCurrStatus)
 	StatusData.wControllerStatus = NORMAL_ACTIVE;
 	return S_OK;
@@ -245,29 +303,34 @@ HRESULT CDIL_CAN_727::CAN_GetCurrStatus(STATUSMSG& StatusData)
 
 HRESULT CDIL_CAN_727::CAN_GetTxMsgBuffer(BYTE*& pouFlxTxMsgBuffer)
 {
+	LOG("CAN_GetTxMsgBuffer");
 	//RETURN_ERROR_RESULT(CAN_GetTxMsgBuffer)
 	return S_OK;
 }
 
 HRESULT CDIL_CAN_727::CAN_SendMsg(DWORD dwClientID, const STCAN_MSG& sCanTxMsg)
 {
+	LOG("CAN_SendMsg");
 	//RETURN_ERROR_RESULT(CAN_SendMsg)
 	return S_OK;
 }
 
 HRESULT CDIL_CAN_727::CAN_GetBusConfigInfo(BYTE* BusInfo)
 {
+	LOG("CAN_GetBusConfigInfo");
 	RETURN_ERROR_RESULT(CAN_GetBusConfigInfo)
 }
 
 HRESULT CDIL_CAN_727::CAN_GetLastErrorString(std::string& acErrorStr)
 {
+	LOG("CAN_GetLastErrorString: %s", m_LastError.c_str());
 	acErrorStr = m_LastError;
 	return S_OK;
 }
 
 HRESULT CDIL_CAN_727::CAN_GetControllerParams(LONG& lParam, UINT nChannel, ECONTR_PARAM eContrParam)
 {
+	LOG("CAN_GetControllerParams");
 	//RETURN_ERROR_RESULT(CAN_GetControllerParams)
 	HRESULT hResult = S_OK;
 	switch (eContrParam)
@@ -309,12 +372,14 @@ HRESULT CDIL_CAN_727::CAN_GetControllerParams(LONG& lParam, UINT nChannel, ECONT
 
 HRESULT CDIL_CAN_727::CAN_SetControllerParams(int nValue, ECONTR_PARAM eContrparam)
 {
+	LOG("CAN_SetControllerParams");
 	//RETURN_ERROR_RESULT(CAN_SetControllerParams)
 	return S_OK;
 }
 
 HRESULT CDIL_CAN_727::CAN_GetErrorCount(SERROR_CNT& sErrorCnt, UINT nChannel, ECONTR_PARAM eContrParam)
 {
+	LOG("CAN_GetErrorCount");
 	//RETURN_ERROR_RESULT(CAN_GetErrorCount)
 	memset(&sErrorCnt, 0, sizeof(SERROR_CNT));
 	return S_OK;
@@ -323,11 +388,13 @@ HRESULT CDIL_CAN_727::CAN_GetErrorCount(SERROR_CNT& sErrorCnt, UINT nChannel, EC
 HRESULT CDIL_CAN_727::CAN_SetAppParams(HWND hWndOwner)
 {
 	//RETURN_ERROR_RESULT(CAN_SetAppParams)
+	LOG("CAN_SetAppParams");
 	return S_OK;
 }
 
 HRESULT CDIL_CAN_727::CAN_ManageMsgBuf(BYTE bAction, DWORD ClientID, CBaseCANBufFSE* pBufObj)
 {
+	LOG("CAN_ManageMsgBuf");
 	//RETURN_ERROR_RESULT(CAN_ManageMsgBuf)
 	HRESULT hResult = S_OK;
 	if (ClientID != 0){
@@ -338,6 +405,7 @@ HRESULT CDIL_CAN_727::CAN_ManageMsgBuf(BYTE bAction, DWORD ClientID, CBaseCANBuf
 
 HRESULT CDIL_CAN_727::CAN_RegisterClient(BOOL bRegister, DWORD& ClientID, char* pacClientName)
 {
+	LOG("CAN_RegisterClient");
 	//RETURN_ERROR_RESULT(CAN_RegisterClient)
 	HRESULT hResult = S_FALSE;
 	if (bRegister)
@@ -365,11 +433,13 @@ HRESULT CDIL_CAN_727::CAN_RegisterClient(BOOL bRegister, DWORD& ClientID, char* 
 			hResult = S_OK;
 		}
 	}
+	LOG("CAN_RegisterClient reg:%s; name:%s", bRegister ? "true" : "false", pacClientName != 0 ? pacClientName : "null");
 	return hResult;
 }
 
 HRESULT CDIL_CAN_727::CAN_GetCntrlStatus(const HANDLE& hEvent, UINT& unCntrlStatus)
 {
+	LOG("CAN_GetCntrlStatus");
 	//RETURN_ERROR_RESULT(CAN_GetCntrlStatus)
 	HRESULT hResult = S_OK;
 	unCntrlStatus = NORMAL_ACTIVE;
@@ -378,12 +448,14 @@ HRESULT CDIL_CAN_727::CAN_GetCntrlStatus(const HANDLE& hEvent, UINT& unCntrlStat
 
 HRESULT CDIL_CAN_727::CAN_LoadDriverLibrary(void)
 {
+	LOG("CAN_LoadDriverLibrary");
 	//RETURN_ERROR_RESULT(CAN_LoadDriverLibrary)
 	return S_OK;
 }
 
 HRESULT CDIL_CAN_727::CAN_UnloadDriverLibrary(void)
 {
+	LOG("CAN_UnloadDriverLibrary");
 	//RETURN_ERROR_RESULT(CAN_UnloadDriverLibrary)
 	return S_OK;
 }
@@ -392,5 +464,6 @@ HRESULT CDIL_CAN_727::CAN_SetHardwareChannel(PSCONTROLLER_DETAILS, DWORD dwDrive
 {
 	//RETURN_ERROR_RESULT(CAN_SetHardwareChannel)
 	// no return values
+	LOG("CAN_SetHardwareChannel %d", unChannelCount);
 	return S_OK;
 }
