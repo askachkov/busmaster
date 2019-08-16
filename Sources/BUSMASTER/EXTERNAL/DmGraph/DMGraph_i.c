@@ -6,7 +6,7 @@
 
 
  /* File created by MIDL compiler version 7.00.0555 */
-/* at Wed Aug 14 16:50:37 2019
+/* at Thu Aug 15 19:18:50 2019
  */
 /* Compiler settings for DMGraph.idl:
     Oicf, W1, Zp8, env=Win32 (32b run), target_arch=X86 7.00.0555 

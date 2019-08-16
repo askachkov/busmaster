@@ -357,7 +357,7 @@ HRESULT CDIL_CAN::DILC_SelectDriver(DWORD dwDriverID, HWND hWndOwner)
                 m_hDll = LoadLibrary("CAN_ISOLAR_EVE_VCAN.dll");
                 break;
 			case DRIVER_CAN_727:
-				m_hDll = LoadLibrary("CAN_727.dll");
+				m_hDll = LoadLibrary("scan-tool.dll");
 				break;
             case DAL_NONE:
                 DILC_PerformClosureOperations();

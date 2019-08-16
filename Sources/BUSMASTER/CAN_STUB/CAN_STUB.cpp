@@ -774,10 +774,11 @@ HRESULT CDIL_CAN_STUB::CAN_StartHardware(void)
 HRESULT CDIL_CAN_STUB::CAN_SendMsg(DWORD dwClientID, const STCAN_MSG& sCanTxMsg)
 {
     HRESULT hResult = S_FALSE;
-
+	
     // Lock so that no other thread may use the common resources
     EnterCriticalSection(&sg_CSBroker);
-
+	
+	
     // Assign parameter
     STCAN_MSG sTmpMsg = sCanTxMsg;
     sg_pouCanTxMsg = &sTmpMsg;
@@ -790,10 +791,10 @@ HRESULT CDIL_CAN_STUB::CAN_SendMsg(DWORD dwClientID, const STCAN_MSG& sCanTxMsg)
     WaitForSingleObject(sg_hNotifyFinish, INFINITE);
     // Save the result
     hResult = sg_hResult;
-
+	
     // Work is over, now unlock for others to use common resources
     LeaveCriticalSection(&sg_CSBroker);
-
+	
     return hResult;
 }
 
@@ -1049,7 +1050,7 @@ DWORD WINAPI BrokerThreadBusEmulation(LPVOID pVoid)
             break;
             case SEND_MESSAGE:
             {
-                sg_hResult = Worker_SendCanMsg(pISimENG, sg_pouCanTxMsg);
+				sg_hResult = Worker_SendCanMsg(pISimENG, sg_pouCanTxMsg);
                 SetEvent(sg_hNotifyFinish);
             }
             break;

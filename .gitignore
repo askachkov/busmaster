@@ -380,3 +380,10 @@ Sources/BUSMASTER/EXTERNAL/DmGraph/DebugU/*
 Sources/BUSMASTER/EXTERNAL/AdvancedUIPlugin/Debug/*
 Sources/BUSMASTER/BIN/DumpFiles/*
 
+Sources/BUSMASTER/CAN_ETAS_BOA/Release_CAN_ETAS_BOA_1_4/
+Sources/BUSMASTER/CAN_ETAS_BOA/Release_CAN_ETAS_BOA_1_5/
+Sources/BUSMASTER/CAN_ETAS_BOA/Release_CAN_ETAS_BOA_2/
+Sources/BUSMASTER/EXTERNAL/AdvancedUIPlugin/Release/
+Sources/BUSMASTER/EXTERNAL/DmGraph/ReleaseUMinSize/
+Sources/Kernel/BusmasterDriverInterface/DIL_J1939/Release/
+
