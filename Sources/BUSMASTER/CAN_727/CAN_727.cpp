@@ -328,8 +328,22 @@ HRESULT CDIL_CAN_727::CAN_GetLastErrorString(std::string& acErrorStr)
 	return S_OK;
 }
 
+
+#ifdef _MSC_VER                 // Windows includes
+
+#include <windows.h>
+#include <conio.h>
+#include <winioctl.h>
+
+#include <setupapi.h>
+#include <initguid.h>           /* Required for GUID definition */
+#include <Setupapi.h>
+
 HRESULT CDIL_CAN_727::CAN_GetControllerParams(LONG& lParam, UINT nChannel, ECONTR_PARAM eContrParam)
 {
+
+	Handle = SetupDiGetClassDevs(&GUID_DEVINTERFACE_VOLUME, NULL, NULL, DIGCF_PRESENT | DIGCF_DEVICEINTERFACE);
+
 	LOG("CAN_GetControllerParams");
 	//RETURN_ERROR_RESULT(CAN_GetControllerParams)
 	HRESULT hResult = S_OK;

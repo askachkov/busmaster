@@ -91,7 +91,7 @@ static ENTRY_DIL sg_ListDIL[] =
     {DRIVER_CAN_PEAK_USB,   "&PEAK USB"         },
     {DRIVER_CAN_VECTOR_XL,  "&Vector XL"        },
     {DRIVER_CAN_VSCOM,      "VScom &CAN-API"    },
-	{ DRIVER_CAN_727, "727 Device" },
+	{ DRIVER_CAN_727, "Scan-Tool" },
 };
 
 CDIL_CAN::CDIL_CAN()

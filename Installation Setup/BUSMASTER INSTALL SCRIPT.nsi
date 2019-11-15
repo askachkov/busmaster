@@ -493,6 +493,7 @@ Section "BUSMASTER"
   File ..\Sources\BUSMASTER\Application\BUSMASTER_Interface.c
   File ..\Sources\BUSMASTER\Application\BUSMASTER_Interface.h
   File ..\Sources\BUSMASTER\BIN\Release\CAN_STUB.dll
+  File ..\Sources\BUSMASTER\BIN\Release\scan-tool.dll
   File ..\Sources\BUSMASTER\BIN\Release\Changelog.txt
   File ..\Sources\BUSMASTER\BIN\Release\DIL_J1939.dll
   File ..\Sources\BUSMASTER\BIN\Release\UDS_Protocol.dll
@@ -799,7 +800,7 @@ SectionGroup "Registry Cleanup"
 Section "BUSMASTER Reg Cleanup"
   SectionIn RO 1 2 3
   SetOutPath $INSTDIR
-  File BUSMASTER_Cleanup_Registry.exe
+  File ..\Sources\BUSMASTER\BIN\Release\BUSMASTER_Cleanup_Registry.exe
 SectionEnd
 
 SectionGroupEnd
